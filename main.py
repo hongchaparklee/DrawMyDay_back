@@ -5,8 +5,13 @@ import uuid
 from fastapi import FastAPI, APIRouter, File, UploadFile
 from fastapi.responses import HTMLResponse
 import os
-
 import requests
+from dotenv import load_dotenv
+from hanspell import spell_checker
+from hanspell.constants import CheckResult
+
+load_dotenv()
+
 
 app = FastAPI()
 
@@ -33,9 +38,9 @@ async def upload_image(img_file:UploadFile =File(...)):
         return {"error": "File Type is not valid please upload only jpg,jpeg and png"}
     
 
-api_url = 'https://zi0uv1fzvz.apigw.ntruss.com/custom/v1/28276/d3e2835462d47248f2cb0ae0e59b207575163a11137316a56754d3d3e66e6bd1/general'
-secret_key = 'dmhSWmZoQkJDbE5ic1VhbVFEeGxqR2xsZUJqdnpvSms='
-image_file = './images//sample1.jpg'
+api_url = os.getenv("ocr_api_url")
+secret_key = os.getenv("ocr_secret_key")
+image_file = './images//diary1.jpg'
 
 request_json = {
     'images': [
@@ -67,8 +72,27 @@ with open('result.json', 'w', encoding='utf-8') as make_file:
 
 text = " "
 for field in result['images'][0]['fields']:
-    text += field['inferText']
-print(text)
+    text += field['inferText']+ "  "
+print(text+'\n')
 
-# hhhooho
-# Double HOYEE
+
+# spelled_text = spell_checker.check(text)
+# print(spelled_text.checked)
+# spelled_text.as_dict()
+# spelled_text
+
+# for key, value in spelled_text.words.items():
+#     if value == 0:
+#         # print("맞춤법 검사 통과:",key)        
+#         pass
+#     elif value ==1:
+#         print("맞춤법 오류:",key)
+#     elif value ==2:
+#         print("띄어쓰기 오류:",key)
+#     elif value ==3:
+#         print("표준어 의심:",key)
+#     elif value ==4:
+#         print("통계적 오류 의심:",key)
+    
+
+
